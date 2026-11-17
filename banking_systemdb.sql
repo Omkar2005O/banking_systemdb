@@ -254,3 +254,103 @@ FROM ACCOUNTS;
 SELECT CUSTOMERID, BALANCE HIGHEST_BALANCE
 FROM ACCOUNTS
 ORDER BY BALANCE DESC LIMIT 1;
+
+-- which accounts have null balance
+select *
+from accounts
+where balance is null;
+
+-- which branch manages the most accounts?
+
+select branchid, count(accountid)as total_accounts
+from accounts
+group by branchid
+order by total_accounts desc limit 1;
+
+-- transactions analysis
+-- what is the total transaction amount
+select sum(amount) as total_transactions from transactions;
+
+-- how many deposit/withdrwals/transfers are there?
+select transactiontype, count(transactionid) as total_transactions
+from transactions
+group by transactiontype
+order by total_transactions desc ;
+
+select transactiontype, count(*) total_transactions
+from transactions
+where transactiontype in ('deposit','withdrawal','transfer')
+group by transactiontype;
+
+-- which transaction type has the highest volume
+
+select transactiontype,sum(amount) as total_amount
+from transactions
+group by transactiontype
+order by total_amount desc limit 1;
+
+select * from transactions;
+
+-- which accounts has the highest transaction activity
+select accountid, count(transactionid) as total_amount
+from transactions 
+group by accountid 
+order by total_amount desc limit 1 ;
+
+-- what is the average transaction amount
+select avg(amount) as avg_amount from transactions;
+-- which transactions have missing dates/amounts?
+ 
+ select *
+ from transactions
+ where transactiondate is null or amount is null;
+ 
+ -- loan analysis
+ select sum(loanamount)as total_amount from loans;
+ 
+-- which customer has the largest loan?
+select customerid, sum(loanamount) as total_loans
+from loans 
+group by customerid
+order by total_loans desc limit 1;
+
+-- which loans has the highest interest rate
+select loanid, max(interestrate) as highest_interest_rate
+from loans
+group by loanid 
+order by loanid desc limit 1;
+
+-- which loans are still active
+select*
+from loans
+where enddate >= now();
+
+-- which customers have multiple loans?
+select customerid ,count(*) total_loans
+from loans
+group by customerid
+having total_loans > 1;
+
+-- what is average loan amount?
+select avg(loanamount) as average_loan_amount
+from loans;
+
+-- which branch has the most customers/accounts?
+-- branch with most accounts
+
+select branchid, count(*) as total_accounts
+from accounts
+group by branchid 
+order by total_accounts desc limit 1;
+
+-- branch with most customers 
+select branchid, count(customerid) as total_customers
+from accounts
+group by branchid 
+order by total_customers desc limit 1;
+
+
+
+
+
+
